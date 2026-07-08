@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solutions | Sanjana Technologies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=Work+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --canvas: #EDE6D6;
+      --canvas-2: #E3DAC5;
+      --ink: #221E19;
+      --indigo: #1F3A5F;
+      --indigo-2: #16283F;
+      --rust: #C1552F;
+      --rust-2: #A2431F;
+      --brass: #B8863C;
+      --steel: #8A8578;
+      --line: rgba(34, 30, 25, 0.16);
+      --ease: cubic-bezier(.16, .84, .44, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: 'Work Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    ::selection {
+      background: var(--rust);
+      color: var(--canvas);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+
+      * {
+        animation: none !important;
+      }
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(237, 230, 214, 0.86);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 6vw;
+      transition: padding .3s var(--ease);
+    }
+
+    .nav.shrink {
+      padding: 10px 6vw;
+    }
+
+    .nav-brand {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-brand .dot {
+      width: 100px;
+      height: 60px;
+      background-image: url("./slogo.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      margin-right: -34px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 4px;
+      white-space: nowrap;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 1px;
+      background: var(--rust);
+      transition: width .3s var(--ease);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: var(--rust);
+    }
+
+    .nav-links a.active {
+      color: var(--rust);
+    }
+
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      background: var(--indigo);
+      color: var(--canvas);
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--indigo);
+      transition: background .25s var(--ease), transform .25s var(--ease);
+      white-space: nowrap;
+    }
+
+    .nav-cta:hover {
+      background: var(--rust);
+      border-color: var(--rust);
+      transform: translateY(-2px);
+    }
+
+    .burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .burger span {
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      transition: transform .3s var(--ease), opacity .3s var(--ease);
+    }
+
+    .burger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .burger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-panel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      top: 0;
+      z-index: 99;
+      background: var(--canvas);
+      padding: 100px 8vw 40px;
+      flex-direction: column;
+      gap: 18px;
+      transform: translateY(-100%);
+      transition: transform .4s var(--ease);
+      overflow-y: auto;
+    }
+
+    .mobile-panel.open {
+      transform: translateY(0);
+    }
+
+    .mobile-panel a {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+    }
+
+    @media (max-width:1100px) {
+      .nav-links {
+        display: none;
+      }
+
+      .burger {
+        display: flex;
+      }
+
+      .mobile-panel {
+        display: flex;
+      }
+    }
+
+    /* HERO */
+    .hero {
+      padding: clamp(70px, 12vh, 120px) 6vw 70px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      min-height: 44vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .blob {
+      position: absolute;
+      right: -16%;
+      top: -22%;
+      width: min(700px, 80vw);
+      height: min(700px, 80vw);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      animation: spin 60s linear infinite;
+    }
+
+    .blob::before {
+      content: "";
+      position: absolute;
+      inset: 70px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .eyebrow {
+      color: var(--rust-2);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 26px;
+      height: 1px;
+      background: var(--rust);
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6.4vw, 76px);
+      line-height: 0.98;
+      max-width: 18ch;
+      overflow: hidden;
+    }
+
+    .hero h1 .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero h1 .line span {
+      display: block;
+      transform: translateY(105%);
+      animation: riseIn .9s var(--ease) forwards;
+    }
+
+    .hero h1 .line:nth-child(1) span {
+      animation-delay: .05s;
+    }
+
+    @keyframes riseIn {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .hero-sub {
+      max-width: 560px;
+      margin-top: 24px;
+      font-size: clamp(15px, 1.6vw, 17px);
+      line-height: 1.6;
+      color: #4A443B;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease) .5s forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* SOLUTIONS LIST */
+    .solutions {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .solution {
+      display: grid;
+      grid-template-columns: 260px 1fr 220px;
+      gap: 40px;
+      padding: 56px 6vw;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .solution:last-child {
+      border-bottom: none;
+    }
+
+    .solution:nth-child(even) {
+      background: rgba(184, 134, 60, 0.035);
+    }
+
+    .sol-tag {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .sol-index {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--brass);
+    }
+
+    .sol-cat {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--rust-2);
+    }
+
+    .sol-heading {
+      margin-top: 16px;
+    }
+
+    .sol-heading h2 {
+      font-size: clamp(24px, 2.6vw, 32px);
+      line-height: 1.02;
+    }
+
+    .sol-body p.intro {
+      font-size: 15.5px;
+      color: #4A443B;
+      line-height: 1.65;
+      max-width: 60ch;
+      margin: 0 0 22px;
+    }
+
+    .sol-body ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .sol-body ul li {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.5;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .sol-body ul li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 8px;
+      height: 1px;
+      background: var(--rust);
+    }
+
+    .sol-meta {
+      border-left: 1px solid var(--line);
+      padding-left: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      align-self: start;
+    }
+
+    .sol-meta .item .mono {
+      font-size: 10.5px;
+      color: var(--steel);
+    }
+
+    .sol-meta .item .val {
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    @media (max-width: 1050px) {
+      .solution {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        padding: 44px 6vw;
+      }
+
+      .sol-meta {
+        border-left: none;
+        border-top: 1px solid var(--line);
+        padding-left: 0;
+        padding-top: 22px;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+
+    /* CTA BAND */
+    .cta-band {
+      padding: clamp(70px, 14vw, 100px) 6vw;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-band h2 {
+      font-size: clamp(32px, 6vw, 60px);
+      max-width: 15ch;
+      margin: 0 auto;
+      line-height: 0.98;
+    }
+
+    .cta-band p {
+      margin: 24px auto 0;
+      max-width: 460px;
+      color: #4A443B;
+      font-size: 16px;
+    }
+
+    .tag-btn {
+      position: relative;
+      background: var(--indigo);
+      color: var(--canvas);
+      padding: 16px 30px 16px 26px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
+      transition: background .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
+      margin: 38px auto 0;
+    }
+
+    .tag-btn:hover {
+      background: var(--rust);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 26px -14px rgba(193, 85, 47, 0.6);
+    }
+
+    .tag-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .tag-hole {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brass);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 36px 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      color: var(--steel);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+    }
+
+    .footer-links a:hover {
+      color: var(--rust);
+    }
+
+    .totop {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 60;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--indigo);
+      color: var(--canvas);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity .3s var(--ease), transform .3s var(--ease), background .3s var(--ease);
+      cursor: pointer;
+      border: none;
+    }
+
+    .totop.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .totop:hover {
+      background: var(--rust);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="nav-brand"><span class="dot"></span>SANJANA TECHNOLOGIES</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="platform.html">Platform</a>
+      <a href="solutions.html" class="active">Solutions</a>
+      <a href="industries.html">Industries</a>
+      <a href="journey.html">Journey</a>
+      <a href="https://www.sanjanatechnologies.com/contact">Contact</a>
+    </div>
+    <a href="https://erp.sanjanatechnologies.com/desk" class="nav-cta">ERP Login</a>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="platform.html">Platform</a>
+    <a href="solutions.html">Solutions</a>
+    <a href="industries.html">Industries</a>
+    <a href="journey.html">Journey</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="careers.html">Careers</a>
+    <a href="support.html">Support</a>
+    <a href="https://erp.sanjanatechnologies.com/desk">ERP Login</a>
+  </div>
+
+  <section class="hero">
+    <svg class="blob" viewBox="0 0 700 700"></svg>
+    <div class="eyebrow mono">What we deliver</div>
+    <h1><span class="line"><span>Strategic solutions</span></span></h1>
+    <p class="hero-sub">Enterprise-grade ERP services designed to eliminate friction and scale industrial operations
+      globally.</p>
+  </section>
+
+  <section class="solutions">
+    <div class="solution reveal">
+      <div class="sol-tag">
+        <div>
+          <div class="sol-index mono">01</div>
+          <div class="sol-cat mono" style="margin-top:6px;">Implementation</div>
+          <div class="sol-heading">
+            <h2>ERPNext<br>Deployment</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sol-body">
+        <p class="intro">We don't just install software; we map your entire business logic into a digital nervous
+          system. From assessment to go-live, we ensure a seamless transition.</p>
+        <ul>
+          <li>Business process analysis &amp; mapping</li>
+          <li>Industry-specific module configuration</li>
+          <li>Secure data migration from legacy systems</li>
+          <li>User acceptance testing (UAT)</li>
+          <li>Post-deployment stabilization &amp; support</li>
+        </ul>
+      </div>
+      <div class="sol-meta">
+        <div class="item">
+          <div class="mono">Best for</div>
+          <div class="val">Companies migrating to a unified digital core</div>
+        </div>
+        <div class="item">
+          <div class="mono">Typical timeline</div>
+          <div class="val">8 – 12 weeks</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution reveal">
+      <div class="sol-tag">
+        <div>
+          <div class="sol-index mono">02</div>
+          <div class="sol-cat mono" style="margin-top:6px;">Customization</div>
+          <div class="sol-heading">
+            <h2>Advanced<br>Development</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sol-body">
+        <p class="intro">When standard features aren't enough, we engineer bespoke modules. Using the Frappe
+          framework, we build tools that adapt to your business, not the other way around.</p>
+        <ul>
+          <li>Custom Doctypes &amp; complex workflows</li>
+          <li>Bespoke reporting &amp; executive dashboards</li>
+          <li>Third-party API integrations (payment / shipping)</li>
+          <li>Custom print formats for industrial labels</li>
+          <li>Performance optimization for large datasets</li>
+        </ul>
+      </div>
+      <div class="sol-meta">
+        <div class="item">
+          <div class="mono">Best for</div>
+          <div class="val">Businesses with unique, proprietary workflows</div>
+        </div>
+        <div class="item">
+          <div class="mono">Our approach</div>
+          <div class="val">Frappe framework best practices</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution reveal">
+      <div class="sol-tag">
+        <div>
+          <div class="sol-index mono">03</div>
+          <div class="sol-cat mono" style="margin-top:6px;">Training</div>
+          <div class="sol-heading">
+            <h2>Corporate<br>Training</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sol-body">
+        <p class="intro">Software is only as powerful as the people using it. We provide role-based training to
+          ensure 100% platform adoption across your organization.</p>
+        <ul>
+          <li>Role-based user training sessions</li>
+          <li>Administrator &amp; power-user certification</li>
+          <li>Customized documentation &amp; quick-guides</li>
+          <li>Video tutorials for complex workflows</li>
+          <li>Ongoing refresher workshops</li>
+        </ul>
+      </div>
+      <div class="sol-meta">
+        <div class="item">
+          <div class="mono">Delivery</div>
+          <div class="val">On-site or remote hybrid model</div>
+        </div>
+        <div class="item">
+          <div class="mono">Training focus</div>
+          <div class="val">Practical, role-based learning</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution reveal">
+      <div class="sol-tag">
+        <div>
+          <div class="sol-index mono">04</div>
+          <div class="sol-cat mono" style="margin-top:6px;">Support</div>
+          <div class="sol-heading">
+            <h2>Maintenance<br>&amp; Care</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sol-body">
+        <p class="intro">Enterprise software requires constant evolution. We provide proactive maintenance to ensure
+          your system stays secure, updated, and performant.</p>
+        <ul>
+          <li>Critical bug fixes &amp; issue resolution</li>
+          <li>Seamless ERPNext version upgrades</li>
+          <li>Cloud performance monitoring</li>
+          <li>Security patches &amp; backup verification</li>
+          <li>Minor feature enhancements</li>
+        </ul>
+      </div>
+      <div class="sol-meta">
+        <div class="item">
+          <div class="mono">Plans</div>
+          <div class="val">Flexible monthly &amp; annual retainers</div>
+        </div>
+        <div class="item">
+          <div class="mono">Support channels</div>
+          <div class="val">Phone, email, WhatsApp</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band reveal">
+    <h2>Ready to transform?</h2>
+    <p>Not sure which combination of services your business needs? Let's have a strategic conversation.</p>
+    <a href="https://www.sanjanatechnologies.com/contact" class="tag-btn"><span class="tag-hole"></span>Schedule a
+      consultation</a>
+  </section>
+
+  <footer>
+    <span>© 2026 Sanjana Technologies. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="https://erp.sanjanatechnologies.com/desk">ERP Desk / Open Portal</a>
+      <a href="https://wa.me/919597077067">WhatsApp</a>
+      <a href="mailto:support@sanjanatechnologies.com">Email</a>
+    </div>
+    <span class="mono">Managed &amp; supported by Sanjana Technologies</span>
+  </footer>
+
+  <button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+  <script>
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+
+    const nav = document.getElementById('nav');
+    const totop = document.getElementById('totop');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      nav.classList.toggle('shrink', y > 40);
+      totop.classList.toggle('show', y > 600);
+    }, { passive: true });
+
+    const burger = document.getElementById('burger');
+    const panel = document.getElementById('mobilePanel');
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('open');
+      panel.classList.toggle('open');
+    });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      burger.classList.remove('open'); panel.classList.remove('open');
+    }));
+
+    totop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+
+</body>
+
+</html>
