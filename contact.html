@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Sanjana Technologies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=Work+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --canvas: #EDE6D6;
+            --canvas-2: #E3DAC5;
+            --ink: #221E19;
+            --indigo: #1F3A5F;
+            --indigo-2: #16283F;
+            --rust: #C1552F;
+            --rust-2: #A2431F;
+            --brass: #B8863C;
+            --steel: #8A8578;
+            --good: #5FA36B;
+            --line: rgba(34, 30, 25, 0.16);
+            --ease: cubic-bezier(.16, .84, .44, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: var(--canvas);
+            color: var(--ink);
+            font-family: 'Work Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .mono {
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        ::selection {
+            background: var(--rust);
+            color: var(--canvas);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .8s var(--ease), transform .8s var(--ease);
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-stagger>* {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity .7s var(--ease), transform .7s var(--ease);
+        }
+
+        .reveal-stagger.in>* {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-stagger.in>*:nth-child(1) {
+            transition-delay: .02s;
+        }
+
+        .reveal-stagger.in>*:nth-child(2) {
+            transition-delay: .08s;
+        }
+
+        .reveal-stagger.in>*:nth-child(3) {
+            transition-delay: .14s;
+        }
+
+        .reveal-stagger.in>*:nth-child(4) {
+            transition-delay: .2s;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .reveal,
+            .reveal-stagger>* {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+
+            * {
+                animation: none !important;
+            }
+        }
+
+        /* NAV */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(237, 230, 214, 0.86);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 6vw;
+            transition: padding .3s var(--ease);
+        }
+
+        .nav.shrink {
+            padding: 10px 6vw;
+        }
+
+        .nav-brand {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-brand .dot {
+            width: 100px;
+            height: 60px;
+            background-image: url("./slogo.png");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            margin-right: -34px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+
+        .nav-links a {
+            position: relative;
+            padding-bottom: 4px;
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: var(--rust);
+            transition: width .3s var(--ease);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--rust);
+        }
+
+        .nav-links a.active {
+            color: var(--rust);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--indigo);
+            color: var(--canvas);
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--indigo);
+            transition: background .25s var(--ease), transform .25s var(--ease);
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            background: var(--rust);
+            border-color: var(--rust);
+            transform: translateY(-2px);
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .burger span {
+            width: 22px;
+            height: 2px;
+            background: var(--ink);
+            transition: transform .3s var(--ease), opacity .3s var(--ease);
+        }
+
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .mobile-panel {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 0;
+            z-index: 99;
+            background: var(--canvas);
+            padding: 100px 8vw 40px;
+            flex-direction: column;
+            gap: 18px;
+            transform: translateY(-100%);
+            transition: transform .4s var(--ease);
+            overflow-y: auto;
+        }
+
+        .mobile-panel.open {
+            transform: translateY(0);
+        }
+
+        .mobile-panel a {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 14px;
+        }
+
+        @media (max-width:1100px) {
+            .nav-links {
+                display: none;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .mobile-panel {
+                display: flex;
+            }
+        }
+
+        /* HERO */
+        .hero {
+            padding: clamp(70px, 12vh, 110px) 6vw 60px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--line);
+            min-height: 38vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .blob {
+            position: absolute;
+            right: -16%;
+            top: -22%;
+            width: min(700px, 80vw);
+            height: min(700px, 80vw);
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            animation: spin 60s linear infinite;
+        }
+
+        .blob::before {
+            content: "";
+            position: absolute;
+            inset: 70px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .eyebrow {
+            color: var(--rust-2);
+            font-size: 12.5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .eyebrow::before {
+            content: "";
+            display: inline-block;
+            width: 26px;
+            height: 1px;
+            background: var(--rust);
+        }
+
+        .hero h1 {
+            font-size: clamp(34px, 6vw, 68px);
+            line-height: 0.98;
+            max-width: 20ch;
+            overflow: hidden;
+        }
+
+        .hero h1 .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero h1 .line span {
+            display: block;
+            transform: translateY(105%);
+            animation: riseIn .9s var(--ease) forwards;
+        }
+
+        @keyframes riseIn {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .hero-sub {
+            max-width: 580px;
+            margin-top: 24px;
+            font-size: clamp(15px, 1.6vw, 17px);
+            line-height: 1.6;
+            color: #4A443B;
+            opacity: 0;
+            animation: fadeUp .8s var(--ease) .5s forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-actions {
+            margin-top: 34px;
+            opacity: 0;
+            animation: fadeUp .8s var(--ease) .7s forwards;
+        }
+
+        .tag-btn {
+            position: relative;
+            background: var(--indigo);
+            color: var(--canvas);
+            padding: 16px 30px 16px 26px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
+            transition: background .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
+        }
+
+        .tag-btn:hover {
+            background: var(--rust);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 26px -14px rgba(193, 85, 47, 0.6);
+        }
+
+        .tag-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .tag-hole {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--brass);
+        }
+
+        /* CONTACT LAYOUT */
+        .contact-wrap {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .contact-main {
+            padding: clamp(50px, 7vw, 80px) 6vw;
+            border-right: 1px solid var(--line);
+        }
+
+        .contact-main .mono {
+            font-size: 11.5px;
+            color: var(--brass);
+        }
+
+        .contact-main h2 {
+            font-size: clamp(24px, 2.8vw, 34px);
+            margin-top: 14px;
+        }
+
+        .channel-list {
+            margin-top: 34px;
+            display: grid;
+            gap: 1px;
+            background: var(--line);
+            border: 1px solid var(--line);
+        }
+
+        .channel {
+            background: var(--canvas);
+            padding: 26px 24px;
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 18px;
+            align-items: start;
+            position: relative;
+            overflow: hidden;
+            transition: background .3s var(--ease);
+        }
+
+        .channel::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--rust);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform .4s var(--ease);
+        }
+
+        .channel:hover::before {
+            transform: scaleY(1);
+        }
+
+        .channel:hover {
+            background: rgba(184, 134, 60, 0.06);
+        }
+
+        .channel .kind {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--steel);
+        }
+
+        .channel .val {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .channel .val a {
+            display: block;
+            transition: color .25s var(--ease);
+        }
+
+        .channel .val a:hover {
+            color: var(--rust);
+        }
+
+        .location-block {
+            margin-top: 34px;
+            padding: 26px 24px;
+            border: 1px solid var(--line);
+        }
+
+        .location-block .kind {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--steel);
+        }
+
+        .location-block p {
+            margin: 12px 0 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #4A443B;
+            max-width: 46ch;
+        }
+
+        @media (max-width: 560px) {
+            .channel {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        /* SIDEBAR */
+        .contact-side {
+            padding: clamp(50px, 7vw, 80px) 5vw;
+            background: var(--indigo-2);
+            color: var(--canvas);
+        }
+
+        .contact-side .mono {
+            font-size: 11.5px;
+            color: var(--brass);
+        }
+
+        .contact-side h2 {
+            font-size: clamp(22px, 2.4vw, 28px);
+            margin-top: 14px;
+            color: var(--canvas);
+        }
+
+        .sla-list {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .sla-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(237, 230, 214, 0.15);
+        }
+
+        .sla-row:first-child {
+            padding-top: 0;
+        }
+
+        .sla-row .lbl {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #C9C2AE;
+        }
+
+        .sla-row .val {
+            font-size: 14.5px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .tip-box {
+            margin-top: 40px;
+            padding: 22px;
+            border: 1px solid rgba(237, 230, 214, 0.2);
+            background: rgba(237, 230, 214, 0.04);
+        }
+
+        .tip-box .mono {
+            font-size: 10.5px;
+            color: var(--brass);
+        }
+
+        .tip-box p {
+            margin: 10px 0 0;
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #D6D0C0;
+        }
+
+        @media (max-width: 1000px) {
+            .contact-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-main {
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+            }
+        }
+
+        /* PROCESS */
+        .process {
+            border-bottom: 1px solid var(--line);
+        }
+
+        .sec-head {
+            padding: clamp(60px, 9vw, 90px) 6vw 40px;
+        }
+
+        .sec-head .mono {
+            font-size: 12px;
+            color: var(--rust-2);
+        }
+
+        .sec-head h2 {
+            font-size: clamp(28px, 4.2vw, 44px);
+            margin-top: 14px;
+            max-width: 18ch;
+            line-height: 1.02;
+        }
+
+        .sec-head p {
+            margin: 18px 0 0;
+            max-width: 560px;
+            color: #4A443B;
+            font-size: 15.5px;
+            line-height: 1.6;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .step {
+            padding: 40px 5vw 56px;
+            border-right: 1px solid var(--line);
+            border-top: 1px solid var(--line);
+            position: relative;
+            transition: background .3s var(--ease);
+        }
+
+        .step:last-child {
+            border-right: none;
+        }
+
+        .step:hover {
+            background: rgba(193, 85, 47, 0.045);
+        }
+
+        .step .step-num {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 44px;
+            font-weight: 800;
+            color: var(--line);
+            -webkit-text-stroke: 1px var(--steel);
+            line-height: 1;
+        }
+
+        .step h3 {
+            font-size: 18px;
+            margin-top: 18px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .step p {
+            margin: 12px 0 0;
+            font-size: 13.5px;
+            color: #4A443B;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+            .process-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .step:nth-child(2) {
+                border-right: none;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step {
+                border-right: none;
+            }
+        }
+
+        /* CTA BAND */
+        .cta-band {
+            padding: clamp(70px, 14vw, 100px) 6vw;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-band h2 {
+            font-size: clamp(32px, 6vw, 56px);
+            max-width: 16ch;
+            margin: 0 auto;
+            line-height: 0.98;
+        }
+
+        .cta-band p {
+            margin: 24px auto 0;
+            max-width: 480px;
+            color: #4A443B;
+            font-size: 16px;
+        }
+
+        .cta-band .tag-btn {
+            margin: 38px auto 0;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 36px 6vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12.5px;
+            color: var(--steel);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 18px;
+        }
+
+        .footer-links a:hover {
+            color: var(--rust);
+        }
+
+        .totop {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 60;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--indigo);
+            color: var(--canvas);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity .3s var(--ease), transform .3s var(--ease), background .3s var(--ease);
+            cursor: pointer;
+            border: none;
+        }
+
+        .totop.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .totop:hover {
+            background: var(--rust);
+        }
+        em {
+      font-style: normal;
+      color: var(--rust);
+    }
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav" id="nav">
+        <div class="nav-brand"><span class="dot"></span>SANJANA TECHNOLOGIES</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="platform.html">Platform</a>
+            <a href="solutions.html">Solutions</a>
+            <a href="industries.html">Industries</a>
+            <a href="journey.html">Journey</a>
+            <a href="contact.html" class="active">Contact</a>
+        </div>
+        <a href="https://erp.sanjanatechnologies.com/desk" class="nav-cta">ERP Login</a>
+        <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </nav>
+
+    <div class="mobile-panel" id="mobilePanel">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="platform.html">Platform</a>
+        <a href="solutions.html">Solutions</a>
+        <a href="industries.html">Industries</a>
+        <a href="journey.html">Journey</a>
+        <a href="contact.html" class="active">Contact Us</a>
+        <a href="careers.html">Careers</a>
+        <a href="support.html">Support</a>
+        <a href="https://erp.sanjanatechnologies.com/desk">ERP Login</a>
+    </div>
+
+    <section class="hero">
+        <svg class="blob" viewBox="0 0 700 700"></svg>
+        <div class="eyebrow mono">Get in touch</div>
+        <h1><span class="line"><span>Start your <em>digital transformation</em> </span></span></h1>
+        <p class="hero-sub">Let's discuss your ERPNext implementation requirements and architect a system that
+            scales with your ambition.</p>
+        <div class="hero-actions">
+            <a href="mailto:support@sanjanatechnologies.com" class="tag-btn"><span class="tag-hole"></span>Get in
+                touch</a>
+        </div>
+    </section>
+
+    <section class="contact-wrap">
+        <div class="contact-main">
+            <div class="mono">Direct channels</div>
+            <h2>Reach the team</h2>
+            <div class="channel-list reveal-stagger">
+                <div class="channel">
+                    <div class="kind">Email</div>
+                    <div class="val">
+                        <a href="mailto:rajaram.r@sanjanatechnologies.com">rajaram.r@sanjanatechnologies.com</a>
+                        <a href="mailto:support@sanjanatechnologies.com">support@sanjanatechnologies.com</a>
+                    </div>
+                </div>
+                <div class="channel">
+                    <div class="kind">Phone</div>
+                    <div class="val">
+                        <a href="tel:+919597077067">+91 95970 77067 / 82207 94404</a>
+                    </div>
+                </div>
+                <div class="channel">
+                    <div class="kind">WhatsApp</div>
+                    <div class="val">
+                        <a href="https://wa.me/919597077067">+91 95970 77067 / 82207 94404</a>
+                    </div>
+                </div>
+            </div>
+            <div class="location-block reveal">
+                <div class="kind">Location</div>
+                <p>Door No: 5/2406, Plot No. 69, V037, Annur Tech Park, Mettupalayam to Annur Road, Pogalur,
+                    Coimbatore, Tamil Nadu - 641697</p>
+            </div>
+        </div>
+        <div class="contact-side">
+            <div class="mono">Service commitment</div>
+            <h2>Our SLA</h2>
+            <div class="sla-list reveal-stagger">
+                <div class="sla-row">
+                    <span class="lbl">Response time</span>
+                    <span class="val">Within 24 hours</span>
+                </div>
+                <div class="sla-row">
+                    <span class="lbl">Service area</span>
+                    <span class="val">Global &amp; remote</span>
+                </div>
+                <div class="sla-row">
+                    <span class="lbl">Working hours</span>
+                    <span class="val">Mon – Sat, 9AM – 6PM</span>
+                </div>
+                <div class="sla-row">
+                    <span class="lbl">Priority channel</span>
+                    <span class="val">WhatsApp</span>
+                </div>
+            </div>
+            <div class="tip-box reveal">
+                <div class="mono">Strategic tip</div>
+                <p>Prepare your current system details and a brief summary of your operational pain points for a
+                    more productive first consultation.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="process">
+        <div class="sec-head reveal">
+            <div class="mono">The engagement path</div>
+            <h2>What happens next?</h2>
+            <p>Our structured engagement process ensures zero friction from the first call to final go-live.</p>
+        </div>
+        <div class="process-grid">
+            <div class="step reveal">
+                <div class="step-num">01</div>
+                <h3>Initial Contact</h3>
+                <p>We'll reach out within 24 hours to align on your basic requirements.</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-num">02</div>
+                <h3>Discovery Call</h3>
+                <p>A deep-dive session to analyze your business logic and current bottlenecks.</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-num">03</div>
+                <h3>Strategic Proposal</h3>
+                <p>A detailed roadmap including timelines, modules, and investment details.</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-num">04</div>
+                <h3>Digital Core Setup</h3>
+                <p>Configuration and data migration into your tailored ERPNext environment.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-band reveal">
+        <h2>Ready to scale?</h2>
+        <p>Stop fighting your software and start leveraging it. Let's build your digital core together.</p>
+        <a href="mailto:support@sanjanatechnologies.com" class="tag-btn"><span class="tag-hole"></span>Send inquiry
+            now</a>
+    </section>
+
+    <footer>
+        <span>© 2026 Sanjana Technologies. All rights reserved.</span>
+        <div class="footer-links">
+            <a href="https://erp.sanjanatechnologies.com/desk">ERP Desk / Open Portal</a>
+            <a href="https://wa.me/919597077067">WhatsApp</a>
+            <a href="mailto:support@sanjanatechnologies.com">Email</a>
+        </div>
+        <span class="mono">Managed &amp; supported by Sanjana Technologies</span>
+    </footer>
+
+    <button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+    <script>
+        const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        revealEls.forEach(el => io.observe(el));
+
+        const nav = document.getElementById('nav');
+        const totop = document.getElementById('totop');
+        window.addEventListener('scroll', () => {
+            const y = window.scrollY;
+            nav.classList.toggle('shrink', y > 40);
+            totop.classList.toggle('show', y > 600);
+        }, { passive: true });
+
+        const burger = document.getElementById('burger');
+        const panel = document.getElementById('mobilePanel');
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('open');
+            panel.classList.toggle('open');
+        });
+        panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            burger.classList.remove('open'); panel.classList.remove('open');
+        }));
+
+        totop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    </script>
+
+</body>
+
+</html>

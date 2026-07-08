@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industries | Sanjana Technologies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=Work+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --canvas: #EDE6D6;
+            --canvas-2: #E3DAC5;
+            --ink: #221E19;
+            --indigo: #1F3A5F;
+            --indigo-2: #16283F;
+            --rust: #C1552F;
+            --rust-2: #A2431F;
+            --brass: #B8863C;
+            --steel: #8A8578;
+            --good: #5FA36B;
+            --line: rgba(34, 30, 25, 0.16);
+            --ease: cubic-bezier(.16, .84, .44, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: var(--canvas);
+            color: var(--ink);
+            font-family: 'Work Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .mono {
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        ::selection {
+            background: var(--rust);
+            color: var(--canvas);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .8s var(--ease), transform .8s var(--ease);
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+
+            * {
+                animation: none !important;
+            }
+        }
+
+        /* NAV */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(237, 230, 214, 0.86);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 6vw;
+            transition: padding .3s var(--ease);
+        }
+
+        .nav.shrink {
+            padding: 10px 6vw;
+        }
+
+        .nav-brand {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-brand .dot {
+            width: 100px;
+            height: 60px;
+            background-image: url("./slogo.png");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            margin-right: -34px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+
+        .nav-links a {
+            position: relative;
+            padding-bottom: 4px;
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: var(--rust);
+            transition: width .3s var(--ease);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--rust);
+        }
+
+        .nav-links a.active {
+            color: var(--rust);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--indigo);
+            color: var(--canvas);
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--indigo);
+            transition: background .25s var(--ease), transform .25s var(--ease);
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            background: var(--rust);
+            border-color: var(--rust);
+            transform: translateY(-2px);
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .burger span {
+            width: 22px;
+            height: 2px;
+            background: var(--ink);
+            transition: transform .3s var(--ease), opacity .3s var(--ease);
+        }
+
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .mobile-panel {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 0;
+            z-index: 99;
+            background: var(--canvas);
+            padding: 100px 8vw 40px;
+            flex-direction: column;
+            gap: 18px;
+            transform: translateY(-100%);
+            transition: transform .4s var(--ease);
+            overflow-y: auto;
+        }
+
+        .mobile-panel.open {
+            transform: translateY(0);
+        }
+
+        .mobile-panel a {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 14px;
+        }
+
+        @media (max-width:1100px) {
+            .nav-links {
+                display: none;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .mobile-panel {
+                display: flex;
+            }
+        }
+
+        /* HERO */
+        .hero {
+            padding: clamp(70px, 12vh, 120px) 6vw 70px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--line);
+            min-height: 44vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .blob {
+            position: absolute;
+            right: -16%;
+            top: -22%;
+            width: min(700px, 80vw);
+            height: min(700px, 80vw);
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            animation: spin 60s linear infinite;
+        }
+
+        .blob::before {
+            content: "";
+            position: absolute;
+            inset: 70px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .eyebrow {
+            color: var(--rust-2);
+            font-size: 12.5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .eyebrow::before {
+            content: "";
+            display: inline-block;
+            width: 26px;
+            height: 1px;
+            background: var(--rust);
+        }
+
+        .hero h1 {
+            font-size: clamp(34px, 6vw, 70px);
+            line-height: 0.98;
+            max-width: 20ch;
+            overflow: hidden;
+        }
+
+        .hero h1 .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero h1 .line span {
+            display: block;
+            transform: translateY(105%);
+            animation: riseIn .9s var(--ease) forwards;
+        }
+
+        @keyframes riseIn {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .hero-sub {
+            max-width: 580px;
+            margin-top: 24px;
+            font-size: clamp(15px, 1.6vw, 17px);
+            line-height: 1.6;
+            color: #4A443B;
+            opacity: 0;
+            animation: fadeUp .8s var(--ease) .5s forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* INDUSTRY CARDS */
+        .industries {
+            border-bottom: 1px solid var(--line);
+        }
+
+        .industry {
+            display: grid;
+            grid-template-columns: 300px 1fr 240px;
+            gap: 40px;
+            padding: 56px 6vw;
+            border-bottom: 1px solid var(--line);
+            position: relative;
+            transition: background .3s var(--ease);
+        }
+
+        .industry:last-child {
+            border-bottom: none;
+        }
+
+        .industry:nth-child(even) {
+            background: rgba(184, 134, 60, 0.035);
+        }
+
+        .industry:hover {
+            background: rgba(193, 85, 47, 0.045);
+        }
+
+        .ind-head .mono {
+            font-size: 11.5px;
+            color: var(--brass);
+        }
+
+        .ind-head h2 {
+            font-size: clamp(24px, 2.6vw, 32px);
+            margin-top: 16px;
+            line-height: 1.02;
+        }
+
+        .ind-count {
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .ind-count .num {
+            font-size: 26px;
+            color: var(--rust);
+            font-weight: 600;
+        }
+
+        .ind-count .lbl {
+            font-size: 11px;
+            color: var(--steel);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ind-body p.intro {
+            font-size: 15.5px;
+            color: #4A443B;
+            line-height: 1.65;
+            max-width: 60ch;
+            margin: 0 0 22px;
+        }
+
+        .ind-body ul {
+            margin: 0 0 22px;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 10px;
+        }
+
+        .ind-body ul li {
+            font-size: 14px;
+            color: var(--ink);
+            line-height: 1.5;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .ind-body ul li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 7px;
+            width: 8px;
+            height: 1px;
+            background: var(--rust);
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pill {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: 0.5px;
+            padding: 6px 12px;
+            border: 1px solid var(--line);
+            color: var(--indigo);
+            text-transform: uppercase;
+            transition: border-color .25s var(--ease), color .25s var(--ease);
+        }
+
+        .industry:hover .pill {
+            border-color: var(--brass);
+        }
+
+        .ind-outcomes {
+            border-left: 1px solid var(--line);
+            padding-left: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-self: start;
+        }
+
+        .outcome {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13.5px;
+            color: var(--ink);
+        }
+
+        .outcome .led {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--good);
+            flex-shrink: 0;
+            box-shadow: 0 0 6px rgba(95, 163, 107, 0.6);
+        }
+
+        @media (max-width: 1050px) {
+            .industry {
+                grid-template-columns: 1fr;
+                gap: 22px;
+                padding: 44px 6vw;
+            }
+
+            .ind-outcomes {
+                border-left: none;
+                border-top: 1px solid var(--line);
+                padding-left: 0;
+                padding-top: 22px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 18px 28px;
+            }
+        }
+
+        /* CTA BAND */
+        .cta-band {
+            padding: clamp(70px, 14vw, 100px) 6vw;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-band h2 {
+            font-size: clamp(32px, 6vw, 56px);
+            max-width: 16ch;
+            margin: 0 auto;
+            line-height: 0.98;
+        }
+
+        .cta-band p {
+            margin: 24px auto 0;
+            max-width: 480px;
+            color: #4A443B;
+            font-size: 16px;
+        }
+
+        .tag-btn {
+            position: relative;
+            background: var(--indigo);
+            color: var(--canvas);
+            padding: 16px 30px 16px 26px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
+            transition: background .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
+            margin: 38px auto 0;
+        }
+
+        .tag-btn:hover {
+            background: var(--rust);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 26px -14px rgba(193, 85, 47, 0.6);
+        }
+
+        .tag-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .tag-hole {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--brass);
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 36px 6vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12.5px;
+            color: var(--steel);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 18px;
+        }
+
+        .footer-links a:hover {
+            color: var(--rust);
+        }
+
+        .totop {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 60;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--indigo);
+            color: var(--canvas);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity .3s var(--ease), transform .3s var(--ease), background .3s var(--ease);
+            cursor: pointer;
+            border: none;
+        }
+
+        .totop.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .totop:hover {
+            background: var(--rust);
+        }
+         em {
+      font-style: normal;
+      color: var(--rust);
+    }
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav" id="nav">
+        <div class="nav-brand"><span class="dot"></span>SANJANA TECHNOLOGIES</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="platform.html">Platform</a>
+            <a href="solutions.html">Solutions</a>
+            <a href="industries.html" class="active">Industries</a>
+            <a href="journey.html">Journey</a>
+            <a href="https://www.sanjanatechnologies.com/contact">Contact</a>
+        </div>
+        <a href="https://erp.sanjanatechnologies.com/desk" class="nav-cta">ERP Login</a>
+        <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </nav>
+
+    <div class="mobile-panel" id="mobilePanel">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="platform.html">Platform</a>
+        <a href="solutions.html">Solutions</a>
+        <a href="industries.html" class="active">Industries</a>
+        <a href="journey.html">Journey</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="careers.html">Careers</a>
+        <!-- <a href="https://www.sanjanatechnologies.com/support">Support</a> -->
+        <a href="https://erp.sanjanatechnologies.com/desk">ERP Login</a>
+    </div>
+
+    <section class="hero">
+        <svg class="blob" viewBox="0 0 700 700"></svg>
+        <div class="eyebrow mono">Sectors we serve</div>
+        <h1><span class="line"><span>Strategic industry <em>solutions</em></span></span></h1>
+        <p class="hero-sub">Driving digital transformation across specialized manufacturing and trading sectors with
+            precision-engineered ERP ecosystems.</p>
+    </section>
+
+    <section class="industries">
+
+        <div class="industry reveal">
+            <div class="ind-head">
+                <div class="mono">Textile excellence</div>
+                <h2>Garment<br>Manufacturing</h2>
+                <div class="ind-count"><span class="num">03</span><span class="lbl">Garment exporters</span></div>
+            </div>
+            <div class="ind-body">
+                <p class="intro">Optimizing high-complexity workflows including fabric procurement, CMT operations, and
+                    multi-vendor job work. We replace fragmented processes with precise, per-piece costing.</p>
+                <ul>
+                    <li>Style-wise and size-wise fabric consumption tracking</li>
+                    <li>Unified management of outsourced job work and subcontractor logs</li>
+                    <li>Granular per-piece costing with multi-stage production buffers</li>
+                    <li>Advanced quality control with integrated rejection tracking</li>
+                </ul>
+                <div class="pill-row">
+                    <span class="pill">Manufacturing MES</span>
+                    <span class="pill">Subcontracting</span>
+                    <span class="pill">Inventory Logic</span>
+                </div>
+            </div>
+            <div class="ind-outcomes">
+                <div class="outcome"><span class="led"></span>100% costing accuracy</div>
+                <div class="outcome"><span class="led"></span>Real-time work-in-progress</div>
+                <div class="outcome"><span class="led"></span>Zero fabric leakage</div>
+            </div>
+        </div>
+
+        <div class="industry reveal">
+            <div class="ind-head">
+                <div class="mono">Batch traceability</div>
+                <h2>Knitted Fabric<br>Production</h2>
+                <div class="ind-count"><span class="num">01</span><span class="lbl">Fabric manufacturer</span></div>
+            </div>
+            <div class="ind-body">
+                <p class="intro">Precision-driven tracking for yarn lots, dyeing cycles, and finishing processes. We
+                    enable
+                    batch-level quality control and shade management to eliminate production variance.</p>
+                <ul>
+                    <li>End-to-end yarn lot and batch tracking</li>
+                    <li>Automated dyeing recipe and GSM parameter monitoring</li>
+                    <li>Process-wise yield tracking with waste analytics</li>
+                    <li>Comprehensive finishing workflow management</li>
+                </ul>
+                <div class="pill-row">
+                    <span class="pill">Batch Management</span>
+                    <span class="pill">Dyeing Workflows</span>
+                    <span class="pill">Yield Analysis</span>
+                </div>
+            </div>
+            <div class="ind-outcomes">
+                <div class="outcome"><span class="led"></span>Lot-level traceability</div>
+                <div class="outcome"><span class="led"></span>Automated recipe management</div>
+                <div class="outcome"><span class="led"></span>Optimized process yields</div>
+            </div>
+        </div>
+
+        <div class="industry reveal">
+            <div class="ind-head">
+                <div class="mono">Loom efficiency</div>
+                <h2>Woven Fabric<br>Manufacturing</h2>
+                <div class="ind-count"><span class="num">01</span><span class="lbl">Loom project</span></div>
+            </div>
+            <div class="ind-body">
+                <p class="intro">Managing beam preparation, loom scheduling, and multi-stage sizing. We help woven
+                    manufacturers monitor loom efficiency and design variants in a single ecosystem.</p>
+                <ul>
+                    <li>Optimized beam and loom scheduling algorithms</li>
+                    <li>Real-time warp and weft yarn consumption analytics</li>
+                    <li>Design construction variant and sizing logs</li>
+                    <li>Digital fabric inspection and grade categorization</li>
+                </ul>
+                <div class="pill-row">
+                    <span class="pill">Asset Tracking</span>
+                    <span class="pill">Loom Utilization</span>
+                    <span class="pill">Grading Logic</span>
+                </div>
+            </div>
+            <div class="ind-outcomes">
+                <div class="outcome"><span class="led"></span>Maximum loom utilization</div>
+                <div class="outcome"><span class="led"></span>Precise warp-weft balance</div>
+                <div class="outcome"><span class="led"></span>Digital grade sheets</div>
+            </div>
+        </div>
+
+        <div class="industry reveal">
+            <div class="ind-head">
+                <div class="mono">Fast turnover</div>
+                <h2>FMCG &amp; Modern<br>Trading</h2>
+                <div class="ind-count"><span class="num">01</span><span class="lbl">B2B trading client</span></div>
+            </div>
+            <div class="ind-body">
+                <p class="intro">Accelerating inventory turnover through multi-warehouse visibility and tight margin
+                    control.
+                    We deploy sophisticated pricing rules for high-velocity distributors.</p>
+                <ul>
+                    <li>Automated batch and expiry date lifecycle management</li>
+                    <li>Complex pricing rules and multi-tier discount structures</li>
+                    <li>Unified commission and brokerage management dashboards</li>
+                    <li>Intelligent sales dispatch and fulfillment workflows</li>
+                </ul>
+                <div class="pill-row">
+                    <span class="pill">Multi-Warehouse</span>
+                    <span class="pill">Margin Control</span>
+                    <span class="pill">Statutory GST</span>
+                </div>
+            </div>
+            <div class="ind-outcomes">
+                <div class="outcome"><span class="led"></span>Optimized stock turnover</div>
+                <div class="outcome"><span class="led"></span>Zero expiry leakage</div>
+                <div class="outcome"><span class="led"></span>Tiered pricing logic</div>
+            </div>
+        </div>
+
+        <div class="industry reveal">
+            <div class="ind-head">
+                <div class="mono">Precision engineering</div>
+                <h2>Mechanical &amp;<br>Engineering</h2>
+                <div class="ind-count"><span class="num">02</span><span class="lbl">Engineering units</span></div>
+            </div>
+            <div class="ind-body">
+                <p class="intro">Specialized ERP configuration for multi-level BOMs and project-based production. We
+                    bridge
+                    the gap between engineering drawings and shop-floor reality.</p>
+                <ul>
+                    <li>Dynamic multi-level Bill of Materials (BOM) management</li>
+                    <li>Integrated subcontracting and job work tracking cycles</li>
+                    <li>Machine-wise production planning and downtime analytics</li>
+                    <li>Project-based costing and profitability forecasting</li>
+                </ul>
+                <div class="pill-row">
+                    <span class="pill">Project Costing</span>
+                    <span class="pill">Tool &amp; Die Logs</span>
+                    <span class="pill">Asset Lifecycle</span>
+                </div>
+            </div>
+            <div class="ind-outcomes">
+                <div class="outcome"><span class="led"></span>Accurate project margins</div>
+                <div class="outcome"><span class="led"></span>High machine utilization</div>
+                <div class="outcome"><span class="led"></span>Seamless subcontracting</div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="cta-band reveal">
+        <h2>Ready to scale your industry?</h2>
+        <p>Let's deploy a digital ecosystem tailored specifically to your sector's unique logic and operational needs.
+        </p>
+        <a href="contact.html" class="tag-btn"><span class="tag-hole"></span>Consult our
+            industry experts</a>
+    </section>
+
+    <footer>
+        <span>© 2026 Sanjana Technologies. All rights reserved.</span>
+        <div class="footer-links">
+            <a href="https://erp.sanjanatechnologies.com/desk">ERP Desk / Open Portal</a>
+            <a href="https://wa.me/919597077067">WhatsApp</a>
+            <a href="mailto:support@sanjanatechnologies.com">Email</a>
+        </div>
+        <span class="mono">Managed &amp; supported by Sanjana Technologies</span>
+    </footer>
+
+    <button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+    <script>
+        const revealEls = document.querySelectorAll('.reveal');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+            });
+        }, { threshold: 0.12 });
+        revealEls.forEach(el => io.observe(el));
+
+        const nav = document.getElementById('nav');
+        const totop = document.getElementById('totop');
+        window.addEventListener('scroll', () => {
+            const y = window.scrollY;
+            nav.classList.toggle('shrink', y > 40);
+            totop.classList.toggle('show', y > 600);
+        }, { passive: true });
+
+        const burger = document.getElementById('burger');
+        const panel = document.getElementById('mobilePanel');
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('open');
+            panel.classList.toggle('open');
+        });
+        panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            burger.classList.remove('open'); panel.classList.remove('open');
+        }));
+
+        totop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    </script>
+
+</body>
+
+</html>
