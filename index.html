@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanjana Technologies | Enterprise ERPNext Implementation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=Work+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --canvas: #EDE6D6;
+      --canvas-2: #E3DAC5;
+      --ink: #221E19;
+      --indigo: #1F3A5F;
+      --indigo-2: #16283F;
+      --rust: #C1552F;
+      --rust-2: #A2431F;
+      --brass: #B8863C;
+      --steel: #8A8578;
+      --line: rgba(34, 30, 25, 0.16);
+      --ease: cubic-bezier(.16, .84, .44, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: 'Work Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    ::selection {
+      background: var(--rust);
+      color: var(--canvas);
+    }
+
+    /* reveal-on-scroll base */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-stagger>* {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .7s var(--ease), transform .7s var(--ease);
+    }
+
+    .reveal-stagger.in>* {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-stagger.in>*:nth-child(1) {
+      transition-delay: .02s;
+    }
+
+    .reveal-stagger.in>*:nth-child(2) {
+      transition-delay: .09s;
+    }
+
+    .reveal-stagger.in>*:nth-child(3) {
+      transition-delay: .16s;
+    }
+
+    .reveal-stagger.in>*:nth-child(4) {
+      transition-delay: .23s;
+    }
+
+    .reveal-stagger.in>*:nth-child(5) {
+      transition-delay: .30s;
+    }
+
+    .reveal-stagger.in>*:nth-child(6) {
+      transition-delay: .37s;
+    }
+
+    .reveal-stagger.in>*:nth-child(7) {
+      transition-delay: .44s;
+    }
+
+    .reveal-stagger.in>*:nth-child(8) {
+      transition-delay: .51s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .reveal,
+      .reveal-stagger>* {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+
+      * {
+        animation: none !important;
+      }
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(237, 230, 214, 0.86);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 6vw;
+      transition: padding .3s var(--ease);
+    }
+
+    .nav.shrink {
+      padding: 10px 6vw;
+    }
+
+    .nav-brand {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-brand .dot {
+  width: 100px;
+  height: 60px;
+
+  background-image: url("./slogo.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  margin-right: -34px;
+}
+
+    /* @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.5);
+        opacity: .5;
+      }
+    } */
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 1px;
+      background: var(--rust);
+      transition: width .3s var(--ease);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: var(--rust);
+    }
+
+    .nav-cta {
+      background: var(--indigo);
+      color: var(--canvas);
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--indigo);
+      transition: background .25s var(--ease), transform .25s var(--ease);
+    }
+
+    .nav-cta:hover {
+      background: var(--rust);
+      border-color: var(--rust);
+      transform: translateY(-2px);
+    }
+
+    .burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .burger span {
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      transition: transform .3s var(--ease), opacity .3s var(--ease);
+    }
+
+    .burger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .burger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-panel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      top: 0;
+      z-index: 99;
+      background: var(--canvas);
+      padding: 100px 8vw 40px;
+      flex-direction: column;
+      gap: 22px;
+      transform: translateY(-100%);
+      transition: transform .4s var(--ease);
+    }
+
+    .mobile-panel.open {
+      transform: translateY(0);
+    }
+
+    .mobile-panel a {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-size: 34px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    @media (max-width:900px) {
+      .nav-links {
+        display: none;
+      }
+
+      .burger {
+        display: flex;
+      }
+
+      .mobile-panel {
+        display: flex;
+      }
+    }
+
+    /* HERO */
+    .hero {
+      padding: clamp(70px, 14vh, 130px) 6vw 90px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      min-height: 78vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .blob {
+      position: absolute;
+      right: -16%;
+      top: -22%;
+      width: min(700px, 80vw);
+      height: min(700px, 80vw);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      animation: spin 60s linear infinite;
+    }
+
+    .blob::before {
+      content: "";
+      position: absolute;
+      inset: 70px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .thread-drift {
+      position: absolute;
+      left: -6%;
+      bottom: 6%;
+      width: 52%;
+      opacity: .5;
+      stroke-dasharray: 6 10;
+      stroke: var(--rust);
+      fill: none;
+      stroke-width: 1.4;
+      animation: dash 22s linear infinite;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -320;
+      }
+    }
+
+    .eyebrow {
+      color: var(--rust-2);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 26px;
+      height: 1px;
+      background: var(--rust);
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 8.4vw, 112px);
+      line-height: 0.92;
+      max-width: 16ch;
+      overflow: hidden;
+    }
+
+    .hero h1 .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero h1 .line span {
+      display: block;
+      transform: translateY(105%);
+      animation: riseIn .9s var(--ease) forwards;
+    }
+
+    .hero h1 .line:nth-child(1) span {
+      animation-delay: .05s;
+    }
+
+    .hero h1 .line:nth-child(2) span {
+      animation-delay: .18s;
+    }
+
+    @keyframes riseIn {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--rust);
+    }
+
+    .hero-sub {
+      max-width: 520px;
+      margin-top: 28px;
+      font-size: clamp(15px, 1.6vw, 17px);
+      line-height: 1.6;
+      color: #4A443B;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease) .6s forwards;
+    }
+
+    .hero-actions {
+      margin-top: 40px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease) .8s forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tag-btn {
+      position: relative;
+      background: var(--indigo);
+      color: var(--canvas);
+      padding: 16px 30px 16px 26px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
+      transition: background .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
+    }
+
+    .tag-btn:hover {
+      background: var(--rust);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 26px -14px rgba(193, 85, 47, 0.6);
+    }
+
+    .tag-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .tag-hole {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brass);
+    }
+
+    .ghost-link {
+      font-size: 14px;
+      font-weight: 600;
+      background-image: linear-gradient(var(--ink), var(--ink));
+      background-size: 0% 1px;
+      background-repeat: no-repeat;
+      background-position: left bottom;
+      padding-bottom: 2px;
+      transition: background-size .3s var(--ease), color .3s var(--ease);
+    }
+
+    .ghost-link:hover {
+      color: var(--rust);
+      background-image: linear-gradient(var(--rust), var(--rust));
+      background-size: 100% 1px;
+    }
+
+    /* STITCH STRIP - signature element */
+    .stitch-strip {
+      padding: 70px 6vw 90px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .stitch-wrap {
+      position: relative;
+      padding-top: 14px;
+    }
+
+    .stitch-svg {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      overflow: visible;
+    }
+
+    .stitch-svg path {
+      stroke: var(--brass);
+      stroke-width: 1.6;
+      fill: none;
+      stroke-dasharray: 1400;
+      stroke-dashoffset: 1400;
+      transition: stroke-dashoffset 1.4s var(--ease);
+    }
+
+    .stitch-wrap.in .stitch-svg path {
+      stroke-dashoffset: 0;
+    }
+
+    .stitch-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+
+    .swatch {
+      position: relative;
+      padding: 34px 22px 26px;
+      border-right: 1px solid var(--line);
+      transition: transform .35s var(--ease), background .35s var(--ease);
+    }
+
+    .swatch:hover {
+      transform: translateY(-6px);
+      background: rgba(184, 134, 60, 0.07);
+    }
+
+    .swatch:last-child {
+      border-right: none;
+    }
+
+    .swatch::before {
+      content: "";
+      position: absolute;
+      top: -14px;
+      left: 22px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--canvas);
+      border: 2px solid var(--brass);
+      transition: transform .3s var(--ease), background .3s var(--ease);
+    }
+
+    .swatch:hover::before {
+      background: var(--rust);
+      border-color: var(--rust);
+      transform: scale(1.2);
+    }
+
+    .swatch-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--rust-2);
+      font-weight: 500;
+    }
+
+    .swatch h3 {
+      font-size: clamp(20px, 2.4vw, 26px);
+      margin-top: 14px;
+      line-height: 1.05;
+    }
+
+    .swatch p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #4A443B;
+      line-height: 1.5;
+    }
+
+    @media (max-width:900px) {
+      .stitch-row {
+        grid-template-columns: 1fr;
+      }
+
+      .swatch {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .swatch:hover {
+        transform: translateX(4px);
+      }
+    }
+
+    /* SECTION HEADERS */
+    .section {
+      padding: clamp(60px, 10vw, 90px) 6vw;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      max-width: 640px;
+      margin-bottom: 56px;
+    }
+
+    .section-head .mono {
+      font-size: 12px;
+      color: var(--rust-2);
+    }
+
+    .section-head h2 {
+      font-size: clamp(30px, 4vw, 46px);
+      margin-top: 14px;
+      line-height: 1;
+    }
+
+    .section-head p {
+      margin-top: 16px;
+      font-size: 16px;
+      color: #4A443B;
+      line-height: 1.6;
+    }
+
+    /* WHY / STATIONS */
+    .stations {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .station {
+      background: var(--canvas);
+      padding: 40px 34px;
+      position: relative;
+      overflow: hidden;
+      transition: background .3s var(--ease);
+    }
+
+    .station::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--rust);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform .4s var(--ease);
+    }
+
+    .station:hover::before {
+      transform: scaleY(1);
+    }
+
+    .station:hover {
+      background: rgba(184, 134, 60, 0.06);
+    }
+
+    .station .mono {
+      font-size: 12px;
+      color: var(--brass);
+    }
+
+    .station h3 {
+      font-size: 22px;
+      margin-top: 16px;
+      line-height: 1.1;
+    }
+
+    .station p {
+      margin-top: 14px;
+      font-size: 14.5px;
+      color: #4A443B;
+      line-height: 1.6;
+    }
+
+    @media (max-width:900px) {
+      .stations {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* SERVICES */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+    }
+
+    .service {
+      padding: 30px 4px 0;
+      border-top: 2px solid var(--ink);
+      transition: border-color .3s var(--ease);
+    }
+
+    .service:hover {
+      border-color: var(--rust);
+    }
+
+    .service .icon {
+      width: 34px;
+      height: 34px;
+      margin-bottom: 22px;
+      transition: transform .35s var(--ease);
+    }
+
+    .service:hover .icon {
+      transform: translateY(-4px) rotate(-6deg);
+    }
+
+    .service h3 {
+      font-size: 19px;
+      line-height: 1.15;
+    }
+
+    .service p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #4A443B;
+      line-height: 1.55;
+    }
+
+    @media (max-width:900px) {
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width:560px) {
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ECOSYSTEM PANEL */
+    .panel-board {
+      background: var(--indigo-2);
+      padding: clamp(50px, 10vw, 70px) 6vw;
+      border-bottom: 1px solid var(--line);
+      color: var(--canvas);
+    }
+
+    .panel-board .section-head .mono {
+      color: var(--brass);
+    }
+
+    .panel-board .section-head h2 {
+      color: var(--canvas);
+    }
+
+    .panel-board .section-head p {
+      color: #C9C2AE;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid rgba(237, 230, 214, 0.18);
+    }
+
+    .panel {
+      border-right: 1px solid rgba(237, 230, 214, 0.18);
+      border-bottom: 1px solid rgba(237, 230, 214, 0.18);
+      padding: 28px 24px;
+      min-height: 190px;
+      position: relative;
+      transition: background .35s var(--ease);
+    }
+
+    .panel:hover {
+      background: rgba(237, 230, 214, 0.05);
+    }
+
+    .panel:nth-child(4n) {
+      border-right: none;
+    }
+
+    .panel .plate {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .panel .mono {
+      font-size: 11px;
+      color: var(--brass);
+    }
+
+    .panel .led {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #5FA36B;
+      box-shadow: 0 0 6px #5FA36B;
+      animation: blink 3s ease-in-out infinite;
+    }
+
+    .panel:nth-child(2) .led {
+      animation-delay: .4s;
+    }
+
+    .panel:nth-child(3) .led {
+      animation-delay: .8s;
+    }
+
+    .panel:nth-child(4) .led {
+      animation-delay: 1.2s;
+    }
+
+    .panel:nth-child(5) .led {
+      animation-delay: 1.6s;
+    }
+
+    .panel:nth-child(6) .led {
+      animation-delay: 2s;
+    }
+
+    .panel:nth-child(7) .led {
+      animation-delay: 2.4s;
+    }
+
+    .panel:nth-child(8) .led {
+      animation-delay: 2.8s;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .35;
+      }
+    }
+
+    .panel h3 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .panel ul {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 12.5px;
+      color: #B8B19C;
+      line-height: 1.7;
+    }
+
+    .panel ul li {
+      transition: color .25s var(--ease), transform .25s var(--ease);
+    }
+
+    .panel:hover ul li {
+      color: #E4DFCB;
+    }
+
+    @media (max-width:900px) {
+      .panel-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .panel:nth-child(2n) {
+        border-right: none;
+      }
+    }
+
+    @media (max-width:560px) {
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* CTA BAND */
+    .cta-band {
+      padding: clamp(70px, 14vw, 100px) 6vw;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-band h2 {
+      font-size: clamp(32px, 6vw, 64px);
+      max-width: 14ch;
+      margin: 0 auto;
+      line-height: 0.98;
+    }
+
+    .cta-band h2 em {
+      font-style: normal;
+      color: var(--rust);
+    }
+
+    .cta-band p {
+      margin: 24px auto 0;
+      max-width: 460px;
+      color: #4A443B;
+      font-size: 16px;
+    }
+
+    .cta-band .tag-btn {
+      margin: 38px auto 0;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 36px 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      color: var(--steel);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* back to top */
+    .totop {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 60;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--indigo);
+      color: var(--canvas);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity .3s var(--ease), transform .3s var(--ease), background .3s var(--ease);
+      cursor: pointer;
+      border: none;
+    }
+
+    .totop.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .totop:hover {
+      background: var(--rust);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="nav-brand"><span class="dot"></span>SANJANA TECHNOLOGIES</div>
+    <div class="nav-links">
+       <a href="index.html" class="active">Home</a>
+      <a href="about.html">About</a>
+      <a href="platform.html">Platform</a>
+      <a href="solutions.html">Solutions</a>
+      <a href="industries.html">Industries</a>
+      <a href="journey.html">Journey</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <a href="https://erp.sanjanatechnologies.com/desk" class="nav-cta">ERP Login</a>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="platform.html">Platform</a>
+    <a href="solutions.html">Solutions</a>
+    <a href="industries.html">Industries</a>
+    <a href="journey.html">Journey</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <section class="hero">
+    <svg class="blob" viewBox="0 0 700 700"></svg>
+    <svg class="thread-drift" viewBox="0 0 400 120">
+      <path d="M0 60 Q 50 0, 100 60 T 200 60 T 300 60 T 400 60" />
+    </svg>
+    <div class="eyebrow mono">ERP for makers of things</div>
+    <h1>
+      <span class="line"><span>One system.</span></span>
+      <span class="line"><span>Every <em>machine</em>.</span></span>
+    </h1>
+    <p class="hero-sub">We architect ERPNext for garment houses, fabric mills, food plants, and engineering shops — the
+      kind of businesses where a missed batch number costs a client, not just a click. 100% adoption. 0% friction.</p>
+    <div class="hero-actions">
+      <a href="#" class="tag-btn"><span class="tag-hole"></span>Start the build</a>
+      <a href="#" class="ghost-link">See the platform →</a>
+    </div>
+  </section>
+
+  <section class="stitch-strip">
+    <div class="section-head reveal" style="margin-bottom:0;">
+      <div class="mono">Industries on the floor</div>
+      <h2 style="margin-top:14px;">Built where the work happens</h2>
+    </div>
+    <div class="stitch-wrap reveal" id="stitchWrap">
+      <svg class="stitch-svg" viewBox="0 0 1000 6" preserveAspectRatio="none">
+        <path
+          d="M0 3 Q 20 -2, 40 3 T 80 3 T 120 3 T 160 3 T 200 3 T 240 3 T 280 3 T 320 3 T 360 3 T 400 3 T 440 3 T 480 3 T 520 3 T 560 3 T 600 3 T 640 3 T 680 3 T 720 3 T 760 3 T 800 3 T 840 3 T 880 3 T 920 3 T 960 3 T 1000 3" />
+      </svg>
+      <div class="stitch-row reveal-stagger" id="stitchRow">
+        <div class="swatch">
+          <div class="swatch-count">03 PROJECTS LIVE</div>
+          <h3>Garment<br>Manufacturing</h3>
+          <p>Tech pack analysis and style-level budgeting, tracked from sketch to shipment.</p>
+        </div>
+        <div class="swatch">
+          <div class="swatch-count">02 PROJECTS LIVE</div>
+          <h3>Fabric<br>Manufacturer</h3>
+          <p>Batch-wise tracking and loom efficiency metrics, down to the shift.</p>
+        </div>
+        <div class="swatch">
+          <div class="swatch-count">01 PROJECT LIVE</div>
+          <h3>Food<br>Processing</h3>
+          <p>Quality control gates and expiry management with zero tolerance for drift.</p>
+        </div>
+        <div class="swatch">
+          <div class="swatch-count">01 PROJECT LIVE</div>
+          <h3>Engineering</h3>
+          <p>Complex, multi-level BOMs with shop floor automation built in.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head reveal">
+      <div class="mono">Why partner with us</div>
+      <h2>We engineer outcomes,<br>not installations.</h2>
+    </div>
+    <div class="stations reveal-stagger">
+      <div class="station">
+        <div class="mono">Station 01</div>
+        <h3>Deep domain expertise</h3>
+        <p>We bridge complex textile workflows — fabric GSM tracking, granular costing sheets — with the software that
+          runs them.</p>
+      </div>
+      <div class="station">
+        <div class="mono">Station 02</div>
+        <h3>Unified lifecycle support</h3>
+        <p>Implementation, customization, and training from one dedicated team. No vendor juggling, no technical gaps to
+          fall through.</p>
+      </div>
+      <div class="station">
+        <div class="mono">Station 03</div>
+        <h3>Frappe framework specialists</h3>
+        <p>We don't just install software — we build scalable digital ecosystems designed to grow alongside your
+          production line.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head reveal">
+      <div class="mono">Core services</div>
+      <h2>Enterprise-grade,<br>from day one.</h2>
+    </div>
+    <div class="services-grid reveal-stagger">
+      <div class="service">
+        <svg class="icon" viewBox="0 0 40 40" fill="none" stroke="var(--rust)" stroke-width="1.6">
+          <path d="M8 32 L32 8 M20 8 L32 8 L32 20" />
+          <circle cx="8" cy="32" r="3" />
+        </svg>
+        <h3>Strategic Implementation</h3>
+        <p>End-to-end ERP deployment designed to align with your specific operating logic.</p>
+      </div>
+      <div class="service">
+        <svg class="icon" viewBox="0 0 40 40" fill="none" stroke="var(--rust)" stroke-width="1.6">
+          <circle cx="20" cy="20" r="6" />
+          <path d="M20 4v6M20 30v6M4 20h6M30 20h6M9 9l4 4M27 27l4 4M9 31l4-4M27 13l4-4" />
+        </svg>
+        <h3>Advanced Customization</h3>
+        <p>Tailored modules, bespoke reporting, and seamless API integrations for edge cases.</p>
+      </div>
+      <div class="service">
+        <svg class="icon" viewBox="0 0 40 40" fill="none" stroke="var(--rust)" stroke-width="1.6">
+          <path d="M20 6 6 12l14 6 14-6-14-6Z" />
+          <path d="M6 20l14 6 14-6M6 26l14 6 14-6" />
+        </svg>
+        <h3>Corporate Training</h3>
+        <p>Workshops for users and admins built to get you to 100% platform adoption.</p>
+      </div>
+      <div class="service">
+        <svg class="icon" viewBox="0 0 40 40" fill="none" stroke="var(--rust)" stroke-width="1.6">
+          <path d="M20 4 8 9v10c0 8 5 13 12 17 7-4 12-9 12-17V9L20 4Z" />
+        </svg>
+        <h3>Dedicated Support</h3>
+        <p>Proactive maintenance and troubleshooting to keep your operation running around the clock.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="panel-board">
+    <div class="section-head reveal">
+      <div class="mono">The ecosystem</div>
+      <h2>Eight modules.<br>One control panel.</h2>
+      <p>Every function of your operation, wired into a single high-performance system.</p>
+    </div>
+    <div class="panel-grid reveal-stagger">
+      <div class="panel">
+        <div class="plate"><span class="mono">OPERATIONS</span><span class="led"></span></div>
+        <h3>Manufacturing &amp; Production</h3>
+        <ul>
+          <li>Multi-level BOM management</li>
+          <li>Work order &amp; job card mgmt</li>
+          <li>Subcontracting tracking</li>
+          <li>Machine-wise scheduling</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="plate"><span class="mono">INVENTORY</span><span class="led"></span></div>
+        <h3>Stock &amp; Warehouse</h3>
+        <ul>
+          <li>Multi-warehouse management</li>
+          <li>Batch &amp; serial tracking</li>
+          <li>FIFO / moving average valuation</li>
+          <li>Barcode &amp; QR support</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="plate"><span class="mono">SALES</span><span class="led"></span></div>
+        <h3>Sales &amp; CRM</h3>
+        <ul>
+          <li>Lead &amp; opportunity mgmt</li>
+          <li>Quotation to delivery flow</li>
+          <li>Customer-wise pricing rules</li>
+          <li>Sales dashboards &amp; analytics</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="plate"><span class="mono">PROCUREMENT</span><span class="led"></span></div>
+        <h3>Buying &amp; Purchase</h3>
+        <ul>
+          <li>Material request to PO workflow</li>
+          <li>Vendor rate comparison</li>
+          <li>GRN &amp; invoice matching</li>
+          <li>Automatic reorder levels</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="plate"><span class="mono">QUALITY</span><span class="led"></span></div>
+        <h3>Quality Management</h3>
+        <ul>
+          <li>Inbound &amp; outbound checks</li>
+          <li>Rejection &amp; rework tracking</li>
+          <li>Quality alerts &amp; stock holds</li>
+          <li>Defect trend analysis</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="plate"><span class="mono">PROJECTS</span><span class="led"></span></div>
+        <h3>Project Management</h3>
+        <ul>
+          <li>Task &amp; milestone tracking</li>
+          <li>Timesheet &amp; billing</li>
+          <li>Project-wise profit &amp; loss</li>
+          <li>Gantt &amp; kanban views</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="plate"><span class="mono">ASSETS</span><span class="led"></span></div>
+        <h3>Asset Management</h3>
+        <ul>
+          <li>Asset register &amp; location tracking</li>
+          <li>Automated depreciation</li>
+          <li>Maintenance scheduling</li>
+          <li>Asset disposal &amp; write-off</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="plate"><span class="mono">FINANCE</span><span class="led"></span></div>
+        <h3>Accounts &amp; Finance</h3>
+        <ul>
+          <li>GST-compliant invoicing</li>
+          <li>Accounts payable &amp; receivable</li>
+          <li>Cost centre wise P&amp;L</li>
+          <li>Multi-company accounting</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <section class="cta-band reveal">
+    <h2>Ready to run on <em>one</em> system?</h2>
+    <p>Tell us what you're building. We'll show you how it fits on the floor.</p>
+    <a href="#" class="tag-btn"><span class="tag-hole"></span>Get started with Sanjana Technologies</a>
+  </section>
+
+  <footer>
+    <span>© 2026 Sanjana Technologies. All rights reserved.</span>
+    <span class="mono">ERPNext · Frappe Framework</span>
+  </footer>
+
+  <button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+  <script>
+    // scroll reveal
+    const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          if (e.target.id === 'stitchWrap') e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    revealEls.forEach(el => io.observe(el));
+
+    // nav shrink + back-to-top on scroll
+    const nav = document.getElementById('nav');
+    const totop = document.getElementById('totop');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      nav.classList.toggle('shrink', y > 40);
+      totop.classList.toggle('show', y > 600);
+    }, { passive: true });
+
+    // mobile menu
+    const burger = document.getElementById('burger');
+    const panel = document.getElementById('mobilePanel');
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('open');
+      panel.classList.toggle('open');
+    });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      burger.classList.remove('open'); panel.classList.remove('open');
+    }));
+
+    totop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+
+</body>
+
+</html>
